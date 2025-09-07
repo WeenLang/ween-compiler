@@ -1,0 +1,29 @@
+lang="en";
+
+/* Style Definitions */
+def important-text(TextFamily) {
+    font-style = bold,
+    font-size = 16px,
+}
+
+/* Page Structure */
+header {
+    main = {
+        display {
+            name = "viewport",
+            content = "width=device-width, initial-scale=1.0",
+        },
+        charset = "UTF-8",
+        site_name = "Ween",
+    }
+}
+
+body {
+    h1<important-text> {
+        "Hello, World!",
+        opt = {
+            color = "Red",
+            font-size = 20px,
+        }
+    }
+}

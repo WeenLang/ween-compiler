@@ -1,3 +1,5 @@
+use std::fmt;
+
 /// Represents the different types of tokens in the language.
 /// These are used by the lexer to categorize pieces of input.
 #[derive(Debug, PartialEq)]
@@ -30,6 +32,32 @@ enum TokenType {
     Illegal,                    
 }
 
+impl fmt::Display for TokenType {
+    /// Formats the token type as a more readable String.
+    /// 
+    /// This is used for diagnostics, logging, and pretty-printing.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = match self {
+            TokenType::Keyword      => "Keyword",
+            TokenType::Identifier   => "Identifier",
+            TokenType::StringLiteral=> "StringLiteral",
+            TokenType::Number       => "Number",
+            TokenType::Equals       => "Equals",
+            TokenType::Comma        => "Comma",
+            TokenType::Semicolon    => "Semicolon",
+            TokenType::LParen       => "LParen",
+            TokenType::RParen       => "RParen",
+            TokenType::LBrace       => "LBrace",
+            TokenType::RBrace       => "RBrace",
+            TokenType::LessThan     => "LessThan",
+            TokenType::GreaterThan  => "GreaterThan",
+            TokenType::EOF          => "EOF",
+            TokenType::Illegal      => "Illegal",
+        };
+        write!(f, "{}", name)
+    }
+}
+
 /// Represents a single token extracted from the source code.
 /// 
 /// Each token includes: 
@@ -43,6 +71,19 @@ struct Token {
     pub token_type: TokenType,
     pub line: usize,
     pub column: usize,
+}
+
+impl fmt::Display for Token {
+    /// Formats the token as a more readable String.
+    /// 
+    /// Example output: `[Keyword] 'def' at line 1, column 5`
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "[{}] '{}' at line {}, column {}",
+            self.token_type, self.value, self.line, self.column
+        )
+    }
 }
 
 /// The Lexer struct is responsible for scanning the input string

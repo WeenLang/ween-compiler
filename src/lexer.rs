@@ -30,14 +30,19 @@ enum TokenType {
     Illegal,                    
 }
 
-/// Represents a single token
+/// Represents a single token extracted from the source code.
 /// 
-/// Each token has a `value` (the raw String from the input)
-/// and a `token_type` that categorizes its role in the language.
+/// Each token includes: 
+/// - `value`: the raw String from the input
+/// - `token_type`: its syntactic category
+/// - `line`: the line number where the token appears (starting at 1)
+/// - `column`: the column number where the token starts (starting at 1)
 #[derive(Debug, Clone, PartialEq)]
 struct Token {
-    value: String,
-    token_type: TokenType,
+    pub value: String,
+    pub token_type: TokenType,
+    pub line: usize,
+    pub column: usize,
 }
 
 /// The Lexer struct is responsible for scanning the input string

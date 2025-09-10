@@ -2,17 +2,32 @@
 /// These are used by the lexer to categorize pieces of input.
 #[derive(Debug, PartialEq)]
 enum TokenType {
-    Keyword(String),        // e.g., "def"
-    Identifier(String),     // e.g., "header", "font-style"
-    StrinLiteral(String),   // e.g., "Hello, World!"
-    Number(f64),            // e.g., 11, 29, 1342
-    Equals,                 // e.g., '='
-    Comma,                  // e.g., ','
-    Semicolon,              // e.g., ';'
-    LParen, RParen,         // e.g., '(' and ')'
-    LBrace, RBrace,         // e.g., '{' and '}'
-    LessThan, GreaterThan,  // e.g., '<' and '>'
-    EOF,                    // End of input
+    /// A keyword like `def`, `header`, etc.
+    Keyword(String),        
+
+    /// An identifier such as variables names or tag names
+    Identifier(String),     
+
+    /// A String literal enclosed in double quotes
+    StrinLiteral(String),   
+
+    /// A numeric literal, including integers and floats.
+    Number(f64),            
+
+    /// Symbols and punctuation
+    Equals,                 // '='
+    Comma,                  // ','
+    Semicolon,              // ';'
+    LParen, RParen,         // '(' and ')'
+    LBrace, RBrace,         // '{' and '}'
+    LessThan, GreaterThan,  // '<' and '>'
+
+    /// End of input marker
+    EOF,
+
+    /// Unknown or invalid token
+    /// Useful for eventual errors.
+    Illegal,                    
 }
 
 /// Represents a single token

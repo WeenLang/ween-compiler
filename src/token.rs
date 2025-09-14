@@ -2,8 +2,8 @@ use std::fmt;
 
 /// Represents the different types of tokens in the language.
 /// These are used by the lexer to categorize pieces of input.
-#[derive(Debug, PartialEq)]
-enum TokenType {
+#[derive(Debug, Clone, PartialEq)]
+pub enum TokenType {
     /// A keyword like `def`, `header`, etc.
     Keyword(String),        
 
@@ -11,7 +11,7 @@ enum TokenType {
     Identifier(String),     
 
     /// A String literal enclosed in double quotes
-    StrinLiteral(String),   
+    StringLiteral(String),   
 
     /// A numeric literal, including integers and floats.
     Number(f64),            
@@ -38,21 +38,21 @@ impl fmt::Display for TokenType {
     /// This is used for diagnostics, logging, and pretty-printing.
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let name = match self {
-            TokenType::Keyword      => "Keyword",
-            TokenType::Identifier   => "Identifier",
-            TokenType::StringLiteral=> "StringLiteral",
-            TokenType::Number       => "Number",
-            TokenType::Equals       => "Equals",
-            TokenType::Comma        => "Comma",
-            TokenType::Semicolon    => "Semicolon",
-            TokenType::LParen       => "LParen",
-            TokenType::RParen       => "RParen",
-            TokenType::LBrace       => "LBrace",
-            TokenType::RBrace       => "RBrace",
-            TokenType::LessThan     => "LessThan",
-            TokenType::GreaterThan  => "GreaterThan",
-            TokenType::EOF          => "EOF",
-            TokenType::Illegal      => "Illegal",
+            TokenType::Keyword(_)       => "Keyword",
+            TokenType::Identifier(_)    => "Identifier",
+            TokenType::StringLiteral(_) => "StringLiteral",
+            TokenType::Number(_)        => "Number",
+            TokenType::Equals           => "Equals",
+            TokenType::Comma            => "Comma",
+            TokenType::Semicolon        => "Semicolon",
+            TokenType::LParen           => "LParen",
+            TokenType::RParen           => "RParen",
+            TokenType::LBrace           => "LBrace",
+            TokenType::RBrace           => "RBrace",
+            TokenType::LessThan         => "LessThan",
+            TokenType::GreaterThan      => "GreaterThan",
+            TokenType::EOF              => "EOF",
+            TokenType::Illegal          => "Illegal",
         };
         write!(f, "{}", name)
     }
@@ -66,7 +66,7 @@ impl fmt::Display for TokenType {
 /// - `line`: the line number where the token appears (starting at 1)
 /// - `column`: the column number where the token starts (starting at 1)
 #[derive(Debug, Clone, PartialEq)]
-struct Token {
+pub struct Token {
     pub value: String,
     pub token_type: TokenType,
     pub line: usize,

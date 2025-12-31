@@ -47,18 +47,77 @@ impl Lexer {
         ch
     }
 
+    fn read_identifier(&mut self) -> String {
+        let start = self.position;
+
+        while let Some(ch) = self.peek_current_char() {
+            if ch.is_alphanumeric() || ch == '_' || ch == '-' {
+                self.advance();
+            } else {
+                break;
+            }
+        }
+
+        self.input[start..self.position].iter().collect()
+    }
+
+    fn read_number(&mut self) -> String {
+        let start = self.position;
+        let mut seen_dot = false;
+        while let Some(ch) = self.peek_current_char() {
+            if ch.is_ascii_digit() {
+                self.advance();
+            } else if ch == '.' && !seen_dot {
+              seen_dot = true;
+              self.advance();
+            } else {
+                break;
+            }
+        }
+
+        self.input[start..self.position].iter().collect()
+    }
+
     /// Produce the next token from the input stream.
     pub fn next_token(&mut self) -> Token{
         while let Some(ch) = self.peek_current_char() {
+            // Skip whitespace
             if ch.is_whitespace() {
-                self.advance(); // Skip whitespace
+                self.advance(); 
                 continue;
             }
 
             let line = self.line;
             let column = self.column;
 
-            // TODO: Add support for identifiers, keywords, numbers, and string literals
+            // Identifiers and Keywords
+            if ch.is_alphabetic() || ch == '_' {
+                let ident = self.read_identifier();
+
+                let token_type = match ident.as_str() {
+                    "def" | "header" | "body" => TokenType::Keyword(ident.clone()),
+                    _ => TokenType::Identifier(ident.clone()),
+                };
+
+                return Token { 
+                    value: ident, 
+                    token_type, 
+                    line, 
+                    column 
+                };
+            }
+
+            if ch.is_ascii_digit() {
+                let num_str = self.read_number();
+                let num_value = num_str.parse::<f64>().unwrap_or(0.0);
+
+                return Token {
+                    value: num_str,
+                    token_type: TokenType::Number(num_value),
+                    line,
+                    column,
+                };
+            }
             
             let token_type = match ch {
                 '=' => TokenType::Equals,

@@ -1,5 +1,8 @@
 # Ween Compiler
 
+> [!NOTE]  
+> The main branch contains the last working version of the compiler, while the develop the last updated (but not tested).
+
 The **Ween Compiler** is the core of the Ween frontend programming language: a type-safe, minimal, dependency-free language for building interactive web applications.
 
 ## Overview

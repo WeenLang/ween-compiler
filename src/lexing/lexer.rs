@@ -2,7 +2,7 @@ use crate::token::{Token, TokenType};
 
 /// The Lexer struct is responsible for scanning the input string
 /// and producing a stream of tokens for the parser to consume.
-struct Lexer {
+pub struct Lexer {
     input: Vec<char>,               // Convert input to a char vector for better indexing
     position: usize,                // Current index in the input
     line: usize,                    // Line number (starts at 1)
@@ -27,7 +27,6 @@ impl Lexer {
 
     /// Return the next character without advancing.
     fn peek_next_char(&self) -> Option<char> {
-        // TODO: Implement peek_next_char for multi-character tokens like '=='
         self.input.get(self.position + 1).copied()
     }
 
@@ -47,6 +46,7 @@ impl Lexer {
         ch
     }
 
+    // Read the identifier to return the correct Token
     fn read_identifier(&mut self) -> String {
         let start = self.position;
 
@@ -61,6 +61,7 @@ impl Lexer {
         self.input[start..self.position].iter().collect()
     }
 
+    // Read a number to return the correct Token
     fn read_number(&mut self) -> String {
         let start = self.position;
         let mut seen_dot = false;
@@ -76,6 +77,23 @@ impl Lexer {
         }
 
         self.input[start..self.position].iter().collect()
+    }
+
+    // Read a String to return the correct Token
+    fn read_string(&mut self) -> String {
+        self.advance(); // Skip the opening quote (")
+        let start = self.position;
+
+        while let Some(ch) = self.peek_current_char() {
+            if ch == '"' {
+                break;
+            }
+            self.advance();
+        }
+
+        let content: String = self.input[start..self.position].iter().collect();
+        self.advance();
+        content // Skip the closing quote (")
     }
 
     /// Produce the next token from the input stream.
@@ -107,6 +125,7 @@ impl Lexer {
                 };
             }
 
+            // Numbers
             if ch.is_ascii_digit() {
                 let num_str = self.read_number();
                 let num_value = num_str.parse::<f64>().unwrap_or(0.0);
@@ -119,6 +138,35 @@ impl Lexer {
                 };
             }
             
+            // String Literals
+            if ch == '"' {
+                let content = self.read_string();
+                return Token {
+                    value: content.clone(),
+                    token_type: TokenType::StringLiteral(content),
+                    line,
+                    column,
+                };
+            }
+
+            // Comments /* ... */
+            if ch == '/' && self.peek_next_char() == Some('*') {
+                self.advance(); // '/' -> '*'
+                self.advance(); // '*' -> '<next_char>'
+
+                while let Some(c) = self.peek_current_char() {
+                    if c == '*' && self.peek_next_char() == Some('/') {
+                        self.advance(); // '*' -> '/'
+                        self.advance(); // '/' -> '<next_char>'
+                        break;
+                    }
+                    self.advance();
+                }
+
+                continue; // Skip the comment from compiling
+            }
+
+            // Single-char Tokens
             let token_type = match ch {
                 '=' => TokenType::Equals,
                 ',' => TokenType::Comma,
@@ -153,8 +201,7 @@ impl Lexer {
     }
 
     /// Returns true if lexer reached the end of input stream.
-    fn is_at_end(&self) -> bool {
-        // TODO: Use is_at_end() in loops or parser logic
+    pub fn is_at_end(&self) -> bool {
         self.position >= self.input.len()
     }
 
@@ -164,6 +211,7 @@ impl Lexer {
 /// 
 /// This function scans the input and returns a list of `Token`
 /// instances, each representing a meaningful unit in the language.
+#[allow(dead_code)]
 pub fn tokenize(source_code: &str) -> Vec<Token> {
     let mut tokens = Vec::new();
     let mut lexer = Lexer::new(source_code);

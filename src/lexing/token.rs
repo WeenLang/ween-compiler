@@ -22,7 +22,14 @@ pub enum TokenType {
     Semicolon,              // ';'
     LParen, RParen,         // '(' and ')'
     LBrace, RBrace,         // '{' and '}'
+    
+    /// Comparison operators
+    Not,                    // '!'
+    EqualsTo,               // '=='    
+    NotEqualsTo,            // '!='
     LessThan, GreaterThan,  // '<' and '>'
+    LessOrEqual,            // '<='
+    GreaterOrEqual,         // '>='
 
     /// End of input marker
     EOF,
@@ -49,8 +56,13 @@ impl fmt::Display for TokenType {
             TokenType::RParen           => "RParen",
             TokenType::LBrace           => "LBrace",
             TokenType::RBrace           => "RBrace",
+            TokenType::Not              => "Not",
+            TokenType::EqualsTo         => "EqualsTo",
+            TokenType::NotEqualsTo      => "NotEqualsTo",
             TokenType::LessThan         => "LessThan",
             TokenType::GreaterThan      => "GreaterThan",
+            TokenType::LessOrEqual      => "LessOrEqual",
+            TokenType::GreaterOrEqual   => "GreaterOrEqual",
             TokenType::EOF              => "EOF",
             TokenType::Illegal          => "Illegal",
         };

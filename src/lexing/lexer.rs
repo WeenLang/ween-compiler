@@ -166,28 +166,169 @@ impl Lexer {
                 continue; // Skip the comment from compiling
             }
 
-            // Single-char Tokens
-            let token_type = match ch {
-                '=' => TokenType::Equals,
-                ',' => TokenType::Comma,
-                ';' => TokenType::Semicolon,
-                '(' => TokenType::LParen,
-                ')' => TokenType::RParen,
-                '{' => TokenType::LBrace,
-                '}' => TokenType::RBrace,
-                '<' => TokenType::LessThan,
-                '>' => TokenType::GreaterThan,
-                _ => TokenType::Illegal,
-            };
+            // Comparison and punctuation operators
+            match ch {
+                // ==
+                '=' => {
+                    if self.peek_next_char() == Some('=') {
+                        self.advance();
+                        self.advance();
+                        return Token { 
+                            value: "==".into(), 
+                            token_type: TokenType::EqualsTo, 
+                            line, 
+                            column 
+                        };
+                    }
+                    // =
+                    self.advance();
+                    return Token { 
+                        value: "=".into(), 
+                        token_type: TokenType::Equals, 
+                        line, 
+                        column 
+                    };
+                }
 
-            let value = ch.to_string();
-            self.advance();
+                // !=
+                '!' => {
+                    if self.peek_next_char() == Some('=') {
+                        self.advance();
+                        self.advance();
+                        return Token { 
+                            value: "!=".into(), 
+                            token_type: TokenType::NotEqualsTo, 
+                            line, 
+                            column 
+                        };
+                    }
+                    // !
+                    self.advance();
+                    return Token { 
+                        value: "!".into(), 
+                        token_type: TokenType::Not, 
+                        line, 
+                        column 
+                    };
+                }
 
-            return Token {
-                value, 
-                token_type, 
-                line, 
-                column,
+                // <=
+                '<' => {
+                    if self.peek_next_char() == Some('=') {
+                        self.advance();
+                        self.advance();
+                        return Token { 
+                            value: "<=".into(), 
+                            token_type: TokenType::LessOrEqual, 
+                            line, 
+                            column 
+                        };
+                    } 
+                    // <
+                    self.advance();
+                    return Token { 
+                        value: "<".into(), 
+                        token_type: TokenType::LessThan, 
+                        line, 
+                        column 
+                    };
+                }
+
+                // >=
+                '>' => {
+                    if self.peek_next_char() == Some('=') {
+                        self.advance();
+                        self.advance();
+                        return Token { 
+                            value: ">=".into(), 
+                            token_type: TokenType::GreaterOrEqual, 
+                            line, 
+                            column 
+                        };
+                    }
+                    // >
+                    self.advance();
+                    return Token { 
+                        value: ">".into(), 
+                        token_type: TokenType::GreaterThan, 
+                        line, 
+                        column 
+                    };
+                }
+
+                // Other punctuation 
+                ',' => { 
+                    self.advance(); 
+                    return Token { 
+                        value: ",".into(), 
+                        token_type: TokenType::Comma, 
+                        line, 
+                        column 
+                    }; 
+                } 
+                
+                ';' => { 
+                    self.advance(); 
+                    return Token { 
+                        value: ";".into(), 
+                        token_type: TokenType::Semicolon, 
+                        line, 
+                        column 
+                    }; 
+                } 
+                
+                '(' => { 
+                    self.advance(); 
+                    return Token { 
+                        value: "(".into(), 
+                        token_type: TokenType::LParen, 
+                        line, 
+                        column 
+                    }; 
+                } 
+                
+                ')' => { 
+                    self.advance(); 
+                    return Token { 
+                        value: ")".into(), 
+                        token_type: TokenType::RParen, 
+                        line, 
+                        column 
+                    }; 
+                } 
+                
+                '{' => { 
+                    self.advance(); 
+                    return Token { 
+                        value: "{".into(), 
+                        token_type: TokenType::LBrace, 
+                        line, 
+                        column 
+                    }; 
+                } 
+                
+                '}' => { 
+                    self.advance(); 
+                    return Token {
+                        value: "}".into(), 
+                        token_type: TokenType::RBrace, 
+                        line, 
+                        column 
+                    }; 
+                } 
+                
+                // Uknown character (Illegal token)
+                _ => {
+                    let value = ch.to_string();
+                    self.advance();
+
+                    return Token {
+                        value, 
+                        token_type: TokenType::Illegal, 
+                        line, 
+                        column,
+                    }
+                }
             }
         }   
 
